@@ -4,12 +4,27 @@
 {% block title %}Home{% endblock title %}
 
 {% block content %}
-{% if user.is_authenticated %}
-    Hi {{ user.username }}! You are {{ user.age }} years old.
-    <p><a href="{% url 'logout' %}">Log Out</a></p>
-{% else %}
-    <p>You are not logged in</p>
-    <a href="{% url 'login' %}">Log In</a> |
-    <a href="{% url 'signup' %}">Sign Up</a>
-{% endif %}
+{% for article in latest_articles %}
+<div class="card">
+	<div class="card-header">
+		<a href="{% url 'article_detail' article.id %}" class="font-weight-bold">{{ article.title }}</a> &middot;
+		<span class="text-muted">by {{ user_data.first_name }} {{ user_data.last_name }} |
+		{{ article.date }}</span>
+	</div>
+	<div class="card-body">
+		<p>{{ article.body }}</p>
+	</div>
+	<div class="card-footer">
+		{% for comment in article.comment_set.all|slice:":3" %}  <!-- https://docs.djangoproject.com/en/4.1/ref/templates/builtins/#slice -->
+			<p>
+			<span class="font-weight-bold">
+				{{ comment.get_user }} &middot;
+			</span>
+			{{ comment }}
+			</p>
+		{% endfor %}
+	</div>
+</div>
+<br />
+{% endfor %}
 {% endblock content %}

@@ -27,7 +27,9 @@ class Comment(models.Model):
     comment = models.CharField(max_length=140)
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
 
     def __str__(self):
@@ -35,3 +37,8 @@ class Comment(models.Model):
 
     def get_absolute_url(self):
         return reverse('article_list')
+
+    def get_user(self):
+        if self.author is None:
+            return 'Anonymous'
+        return self.author

@@ -13,8 +13,8 @@
 
 <hr>
 <h4>Comments</h4>
-{% for comment in article.comment_set.all %}
-<p>{{ comment.author }} &middot; {{ comment }}</p>
+{% for comment in article.comment_set.all %} <!-- Extracts all comments from the article-->
+    <p>{{ comment.get_user }} &middot; {{ comment }}</p>
 {% endfor %}
 <hr>
 
@@ -25,8 +25,10 @@
 </form>
 
 <p>
+    {% if user.is_authenticated %}
     <a href="{% url 'article_edit' article.id %}">Edit</a> |
     <a href="{% url 'article_delete' article.id %}">Delete</a>
+    {% endif %}
 </p>
 <p>Back to <a href="{% url 'article_list' %}">All Articles</a>.</p>
 {% endblock content %}

@@ -8,9 +8,13 @@ from .forms import CommentForm
 from django.views import View
 
 
-class ArticleListView(LoginRequiredMixin, ListView):
+class ArticleListView(ListView):
+    paginate_by = 4
     model = Article
     template_name = 'article_list.html'
+
+    def get_queryset(self):
+        return Article.objects.all().order_by('-date')
 
 
 class CommentGet(DetailView):
@@ -33,9 +37,15 @@ class CommentPost(SingleObjectMixin, FormView):
         return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
+
+        form.instance.author = None
+
+        if self.request.user.is_authenticated:
+            form.instance.author = self.request.user
+
         comment = form.save(commit=False)
         comment.article = self.object
-        comment.author = self.request.user
+        comment.author = form.instance.author
         comment.save()
         return super().form_valid(form)
 
@@ -44,7 +54,7 @@ class CommentPost(SingleObjectMixin, FormView):
         return reverse('article_detail', kwargs={'pk': article.pk})
 
 
-class ArticleDetailView(LoginRequiredMixin, View):
+class ArticleDetailView(View):
 
     def get(self, request, *args, **kwargs):
         view = CommentGet.as_view()
