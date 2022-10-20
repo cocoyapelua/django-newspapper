@@ -7,7 +7,7 @@
 <div class="card">
 	<div class="card-header">
 		<a href="{% url 'article_detail' article.id %}" class="font-weight-bold">{{ article.title }}</a> &middot;
-		<span class="text-muted">by {{ article.author }} |
+		<span class="text-muted">by {{ article.author.first_name }} {{ article.author.last_name }} |
 		{{ article.date }}</span>
 	</div>
 	<div class="card-body">

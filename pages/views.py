@@ -10,7 +10,5 @@ class HomePageView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        article = Article.objects.all().order_by('-date')
-        context['latest_articles'] = article
-        context['user_data'] = CustomUser.objects.get(pk=article[0].author_id)
+        context['latest_articles'] = Article.objects.select_related('author').all().order_by('-date')[:3]
         return context

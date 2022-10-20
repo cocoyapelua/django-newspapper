@@ -4,6 +4,7 @@ from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import UpdateView, DeleteView, CreateView
 from django.urls import reverse_lazy, reverse
 from .models import Article
+from accounts.models import CustomUser
 from .forms import CommentForm
 from django.views import View
 
@@ -14,7 +15,7 @@ class ArticleListView(ListView):
     template_name = 'article_list.html'
 
     def get_queryset(self):
-        return Article.objects.all().order_by('-date')
+        return Article.objects.select_related('author').all().order_by('-date')
 
 
 class CommentGet(DetailView):
